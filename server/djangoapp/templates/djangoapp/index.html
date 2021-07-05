@@ -36,10 +36,24 @@
                         <a href="contact" class="nav-link">Contact Us</a>
                     </li>
                 </ul>
+                {% if user.is_authenticated %}
                 <div class="d-flex">
-                    <button class="btn btn-success me-2" type="submit">Login</button>
-                    <button class="btn btn-outline-success me-2" type="submit">Register</button>
+                    <div class="input-group">
+                        <a href="" class="btn btn-link me-2">{{ user.first_name }}({{ user.username }})</a>
+                        <a class="btn btn-link me-2 rounded" href="{% url 'djangoapp:logout' %}">Logout</a>
+                    </div>
                 </div>
+                {% else %}
+                <div class="d-flex">
+                    <form method="POST" action="{% url 'djangoapp:login' %}" class="input-group">
+                        {% csrf_token %}
+                        <input type="text" class="form-control me-2 rounded" placeholder="Username" name="username">
+                        <input type="password" class="form-control me-2 rounded" placeholder="Password" name="psw">
+                        <button class="btn btn-primary me-2 rounded" type="submit">Login</button>
+                        <a class="btn btn-link me-2 rounded">Sign Up</a>
+                    </form>
+                </div>
+                {% endif %}
             </div>
         </div>
     </nav>
