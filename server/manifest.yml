@@ -1,10 +1,10 @@
   applications:
-  - name: dealerreiew
+  - name: dealerreview
     routes:
       - route: ostrovskyi-cad0321en.eu-gb.mybluemix.net
     memory: 128M
     buildpack: python_buildpack
-  - name: dealerreiew-nginx
+  - name: dealerreview-nginx
     routes:
       - route: ostrovskyi-cad0321en.eu-gb.mybluemix.net/static
     memory: 128M
