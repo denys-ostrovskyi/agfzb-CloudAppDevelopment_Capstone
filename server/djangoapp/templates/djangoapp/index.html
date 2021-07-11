@@ -50,7 +50,7 @@
                         <input type="text" class="form-control me-2 rounded" placeholder="Username" name="username">
                         <input type="password" class="form-control me-2 rounded" placeholder="Password" name="psw">
                         <button class="btn btn-primary me-2 rounded" type="submit">Login</button>
-                        <a class="btn btn-link me-2 rounded">Sign Up</a>
+                        <a href="{% url 'djangoapp:registration' %}" class="btn btn-link me-2 rounded">Sign Up</a>
                     </form>
                 </div>
                 {% endif %}
