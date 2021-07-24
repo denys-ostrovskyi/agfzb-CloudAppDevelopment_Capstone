@@ -7,7 +7,7 @@ env:
   IBM_CLOUD_REGION: eu-gb
   IBM_CLOUD_GROUP: default
   IBM_CLOUD_SPACE: djangoserver-space
-  IBM_CLOUD_ORG: CAD0321EN-ostrovskyi
+  IBM_CLOUD_ORG: ibm.ostrovskyi@icloud.com
   MANIFEST_NAME: manifest.yml
   IBM_CLOUD_API: ${{secrets.IBM_CLOUD_API_KEY}}
 
@@ -18,10 +18,22 @@ defaults:
 jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-20.04
+        
     steps:
       - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Make migrations
+        run: |
+          python manage.py makemigrations
+          python manage.py migrate
       - name: Install IBM CLI
         run: |
           curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
@@ -33,14 +45,13 @@ jobs:
         shell: bash
       - name: Log into IBM Cloud
         run: |
-          ibmcloud login --apikey "$IBM_CLOUD_API" -r "$IBM_CLOUD_REGION"
+          ibmcloud login --apikey $IBM_CLOUD_API -r $IBM_CLOUD_REGION
         shell: bash
       - name: Target CF
-        run: ibmcloud target --cf-api https://api.$IBM_CLOUD_REGION.cf.cloud.ibm.com -r $IBM_CLOUD_REGION -o $IBM_CLOUD_ORG -s $IBM_CLOUD_SPACE
-        shell: bash
-      - name: List all applications
-        run: ibmcloud cf apps
+        run: | 
+          ibmcloud target --cf-api https://api.$IBM_CLOUD_REGION.cf.cloud.ibm.com -r $IBM_CLOUD_REGION -o $IBM_CLOUD_ORG
+          ibmcloud target -s $IBM_CLOUD_SPACE
         shell: bash
       - name: Deploy manifest file
-        run: ibmcloud cf push -f ./$MANIFEST_NAME
+        run: ibmcloud cf push
         shell: bash
